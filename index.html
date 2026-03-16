@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Someone Special ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600;700;800&family=Outfit:wght@300;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+        }
+
+        /* Particles Background Layer - Set to z-index 200 to be on top of everything */
+        #particle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 200; 
+        }
+
+        section {
+            display: none;
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            z-index: 10;
+        }
+
+        section.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+        }
+
+        /* --- SCREEN 1: INDEX --- */
+        #screen-index {
+            background: linear-gradient(-45deg, #ff1744, #f50057, #d500f9, #651fff);
+            background-size: 400% 400%;
+            animation: gradientMove 12s ease infinite;
+        }
+        .gift-container { font-size: 110px; filter: drop-shadow(0 0 30px gold); animation: float 2.5s ease-in-out infinite; cursor: pointer; }
+        .open-btn { margin-top: 40px; padding: 20px 60px; font-size: 1.2rem; font-weight: 800; color: white; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 100px; cursor: pointer; }
+
+        /* --- SCREEN 2 & 5: GLASS CARDS (Scrollable) --- */
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.45); 
+            backdrop-filter: blur(25px); 
+            border-radius: 40px; 
+            width: 90%; 
+            max-width: 380px; 
+            max-height: 65vh; 
+            padding: 30px; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column;
+            border: 1.5px solid rgba(255,255,255,0.7);
+            position: relative;
+            z-index: 10;
+        }
+        .scrollable-text { 
+            overflow-y: auto; 
+            flex-grow: 1; 
+            scrollbar-width: none; 
+            padding: 10px 0;
+        }
+        .scrollable-text::-webkit-scrollbar { display: none; }
+
+        /* --- SCREEN 3: PHOTO (Memory Lane) --- */
+        .story-container { display: flex; width: 100vw; height: 100vh; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .story-container::-webkit-scrollbar { display: none; }
+        .screen-slide { flex-shrink: 0; width: 100vw; height: 100vh; scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .photo-box { width: 100%; max-width: 350px; border-radius: 30px; overflow: hidden; background: white; padding: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .photo-box img { width: 100%; border-radius: 22px; display: block; object-fit: cover; }
+
+        /* --- RAIN TEXT / DECOR --- */
+        .rain-text, .floating-decor { position: fixed; top: -100px; font-weight: 700; pointer-events: none; z-index: 200; animation: fall linear forwards; }
+
+        /* --- GLOBAL ELEMENTS --- */
+        .nav-btn { background: #000; color: #fff; padding: 16px 80px; border-radius: 50px; font-weight: 700; border: none; cursor: pointer; margin-top: 20px; z-index: 100; }
+        @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes fall { to { transform: translateY(110vh); } }
+        
+        .kiss-tap { position: fixed; pointer-events: none; font-size: 35px; z-index: 999; animation: kissFade 0.8s forwards; }
+        @keyframes kissFade { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5) translateY(-100px); opacity: 0; } }
+        
+        .small-p { position: absolute; border-radius: 50%; pointer-events: none; z-index: 150; animation: fall linear infinite; }
+        
+        #flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000; opacity: 0; pointer-events: none; }
+        .flash-active { animation: flashAnim 0.8s forwards; }
+        @keyframes flashAnim { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" src="bg.mp3" loop></audio>
+    <div id="flash"></div>
+    <div id="particle-container"></div>
+
+    <section id="screen-index" class="active">
+        <h2 style="color: white; font-family: 'Dancing Script'; margin-bottom: 20px; font-size: 2rem;">For Someone Special ❤️</h2>
+        <div class="gift-container">🎁</div>
+        <button class="open-btn" onclick="startApp()">TAP TO OPEN</button>
+    </section>
+
+    <section id="screen-wish" style="background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1); background-size: 400% 400%; animation: gradientMove 10s infinite;">
+        <div class="glass-card">
+            <h1 style="font-family:'Dancing Script'; font-size: 2rem; margin-bottom: 10px;">Happy Birthday ❤️</h1>
+            <div class="scrollable-text">
+                <p>Thank you for being in my life. You are the most special person to me.</p><br>
+                <p>Ma timlai dherai maya garchu. Timi mero life ko sabai bhanda special part hau.</p><br>
+                <p>Timi bina mero din incomplete hunxa. Timi sanga bitayeko harek pal priceless xa.</p><br>
+                <p>Aaja ko yo din timro ho, sadai khusi rahanu, muskurai rahanu.</p><br>
+                <p>Ma jati tada bhaye pani, mero heart hamesha timro nai huncha 💕</p>
+            </div>
+        </div>
+        <button class="nav-btn" onclick="goTo('screen-photo')">NEXT ❤️</button>
+    </section>
+
+    <section id="screen-photo" style="background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1); background-size: 400% 400%;">
+        <div class="story-container" id="storyBox">
+            <div class="screen-slide">
+                <div class="photo-box"><img src="part1.png"></div>
+                <p style="margin-top:15px; font-weight:600;">last ramri xes yl tw 😘</p>
+                <button class="nav-btn" onclick="nextSlide(1)">NEXT ❤️</button>
+            </div>
+            <div class="screen-slide">
+                <div class="photo-box"><img src="part2.png"></div>
+                <p style="margin-top:15px; font-weight:600;">yo photo harxu rw sadai haso lagx 😅</p>
+                <button class="nav-btn" onclick="nextSlide(2)">NEXT ❤️</button>
+            </div>
+            <div class="screen-slide">
+                <div class="photo-box"><img src="part3.png"></div>
+                <p style="margin-top:15px; font-weight:600; text-align:center; padding:0 20px;">yo photo tha xa kaila ko ho.... Tw mama ghr gatis tw birami vatis maila khoi harxu talai vnyrw pathako ni 😅</p>
+                <button class="nav-btn" onclick="nextSlide(3)">NEXT ❤️</button>
+            </div>
+            <div class="screen-slide">
+                <div class="photo-box"><img src="part4.png"></div>
+                <p style="margin-top:15px; font-weight:600;">all time video call gartim ni 😅❤️</p>
+                <button class="nav-btn" onclick="nextSlide(4)">NEXT ❤️</button>
+            </div>
+            <div class="screen-slide">
+                <div class="photo-box"><img src="part5.png"></div>
+                <p style="margin-top:15px; font-weight:600;">tara j vayani last maya garxu yl talai 😘🥰</p>
+                <button class="nav-btn" onclick="goTo('screen-rain')">FINISH ❤️</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-rain" style="background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);"></section>
+
+    <section id="screen-last" style="background: linear-gradient(-45deg, #2c3e50, #4b0082, #800000); background-size: 400% 400%; animation: gradientMove 15s infinite;">
+        <div id="finalBox" onclick="revealFinal()" style="text-align:center; cursor:pointer;">
+            <div style="font-size:80px; filter: drop-shadow(0 0 20px gold);">🎁</div>
+            <p style="color:white; opacity:0.6; margin-top:15px; letter-spacing: 2px;">TAP TO OPEN</p>
+        </div>
+        <div class="glass-card" id="lastMsg" style="display:none; background: rgba(0,0,0,0.3);">
+            <h2 style="color:#ffd700; margin-bottom:15px; font-family: 'Dancing Script'; font-size: 2rem;">Happy Birthday ❤️🎂</h2>
+            <div class="scrollable-text" style="color: white; line-height: 1.8;">
+                <p>Sadai khusi hunu. Yo message timile pauda samma ma dherai tada gai sakchu.</p><br>
+                <p>Tara aaja ko yo din maile rojya hu, kina ki timilai mero yaad aaos sadai.</p><br>
+                <p>Happy Birthday once again ❤️</p><br>
+                <p>And good bye.... Tw bina aklai basna garo parx na mh arulai tw saiga harna sakxu..... Mh tadha vaya nai ramro manxes ni.... Tero jnma din ma .... Mh sub xodyrw gaya aai upahar vo..... 🥲kasai ko aakha nalagos🥺</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const music = document.getElementById('bgMusic');
+        const flash = document.getElementById('flash');
+        const pContainer = document.getElementById('particle-container');
+        let canKiss = false;
+
+        // Continuous small particles (White & Yellow)
+        function initSmallParticles() {
+            setInterval(() => {
+                const p = document.createElement('div');
+                p.className = 'small-p';
+                const size = Math.random() * 5 + 2;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.top = '-10px';
+                // Randomly choose White or Yellow
+                p.style.backgroundColor = Math.random() > 0.5 ? '#ffffff' : '#ffd700';
+                const dur = Math.random() * 3 + 4;
+                p.style.animationDuration = dur + 's';
+                p.style.opacity = Math.random() * 0.7 + 0.3;
+                p.style.boxShadow = `0 0 10px ${p.style.backgroundColor}`;
+                pContainer.appendChild(p);
+                setTimeout(() => p.remove(), dur * 1000);
+            }, 100);
+        }
+
+        // Global Decorations (Emojis & Birthday Text)
+        function initFloatingDecorations() {
+            const decors = ["❤️", "🎂", "🎈", "✨", "Happy Birthday", "Love You", "🥳"];
+            setInterval(() => {
+                const d = document.createElement('div');
+                d.className = 'floating-decor';
+                d.innerText = decors[Math.floor(Math.random() * decors.length)];
+                d.style.left = Math.random() * 90 + 'vw';
+                d.style.color = '#ffffff';
+                d.style.textShadow = '0 0 10px rgba(255,255,255,0.8)';
+                d.style.fontSize = (Math.random() * 10 + 15) + 'px';
+                const dur = Math.random() * 4 + 5;
+                d.style.animationDuration = dur + 's';
+                d.style.opacity = Math.random() * 0.5 + 0.3;
+                pContainer.appendChild(d);
+                setTimeout(() => d.remove(), dur * 1000);
+            }, 800);
+        }
+
+        initSmallParticles();
+        initFloatingDecorations();
+
+        function goTo(id) {
+            document.querySelectorAll('section').forEach(s => {
+                s.style.display = 'none';
+                s.classList.remove('active');
+            });
+            const next = document.getElementById(id);
+            next.style.display = 'flex';
+            setTimeout(() => next.classList.add('active'), 50);
+            canKiss = (id === 'screen-rain');
+            if(id === 'screen-rain') startRain();
+        }
+
+        function startApp() {
+            music.play().catch(() => console.log("Audio play needs user interaction first"));
+            flash.classList.add('flash-active');
+            setTimeout(() => {
+                flash.classList.remove('flash-active');
+                goTo('screen-wish');
+            }, 500);
+        }
+
+        function nextSlide(idx) {
+            document.getElementById('storyBox').scrollTo({ left: window.innerWidth * idx, behavior: 'smooth' });
+        }
+
+        function startRain() {
+            const words = ["Happy Birthday ❤️", "I Love You ❤️", "Stay Happy Always ❤️", "My Everything ❤️", "Maya ❤️", "Sano ❤️"];
+            const rainSec = document.getElementById('screen-rain');
+            const interval = setInterval(() => {
+                if(!canKiss) { clearInterval(interval); return; }
+                const d = document.createElement('div');
+                d.className = 'rain-text';
+                d.innerText = words[Math.floor(Math.random()*words.length)];
+                d.style.left = (Math.random() * 110 - 5) + "vw";
+                d.style.color = "#ffffff";
+                const dur = Math.random() * 1.5 + 1.5;
+                d.style.animationDuration = dur + 's';
+                d.style.fontSize = (Math.random() * 0.5 + 0.8) + 'rem';
+                rainSec.appendChild(d);
+                setTimeout(() => d.remove(), dur * 1000);
+            }, 35);
+            setTimeout(() => goTo('screen-last'), 20000);
+        }
+
+        function revealFinal() {
+            flash.classList.add('flash-active');
+            setTimeout(() => {
+                document.getElementById('finalBox').style.display = 'none';
+                document.getElementById('lastMsg').style.display = 'flex';
+                flash.classList.remove('flash-active');
+            }, 500);
+        }
+
+        const handleInteraction = (e) => {
+            if(!canKiss) return;
+            const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+            const k = document.createElement('div');
+            k.className = 'kiss-tap';
+            k.innerHTML = '💋';
+            k.style.left = x + 'px'; k.style.top = y + 'px';
+            document.body.appendChild(k);
+            setTimeout(() => k.remove(), 800);
+        };
+        document.addEventListener('mousedown', handleInteraction);
+        document.addEventListener('touchstart', handleInteraction);
+    </script>
+</body>
+</html>
