@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Romantic Rain ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+            background-size: 400% 400%;
+            animation: gradientMove 10s ease infinite;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .rain-text {
+            position: fixed;
+            top: -80px;
+            white-space: nowrap;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.9), 0 0 25px rgba(255, 182, 193, 0.6);
+            pointer-events: none;
+            z-index: 10;
+            user-select: none;
+        }
+
+        /* Faster Falling Animation */
+        @keyframes fall {
+            to { transform: translateY(120vh); }
+        }
+
+        .kiss-tap {
+            position: fixed;
+            pointer-events: none;
+            font-size: 35px;
+            z-index: 999;
+            filter: drop-shadow(0 0 15px rgba(255, 20, 147, 1));
+            animation: kissFade 0.8s ease-out forwards;
+        }
+
+        @keyframes kissFade {
+            0% { transform: scale(0.5) translateY(0); opacity: 1; }
+            100% { transform: scale(2.5) translateY(-120px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        const phrases = [
+            "Happy Birthday ❤️",
+            "I Love You ❤️",
+            "Stay Happy Always ❤️",
+            "My Everything ❤️",
+            "Forever Yours ❤️",
+            "Maya ❤️",
+            "Miss You ❤️",
+            "Love You ❤️",
+            "Sano ❤️"
+        ];
+
+        function createRaindrop() {
+            const raindrop = document.createElement('div');
+            raindrop.className = 'rain-text';
+            raindrop.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+            
+            // Random horizontal start
+            raindrop.style.left = (Math.random() * 110 - 5) + "vw"; 
+            
+            // INCREASED SPEED: Duration is now only 1.5 to 3 seconds
+            const duration = Math.random() * 1.5 + 1.5; 
+            raindrop.style.animation = `fall ${duration}s linear forwards`;
+            
+            const size = Math.random() * 0.6 + 0.8; 
+            raindrop.style.fontSize = `${size}rem`;
+            raindrop.style.opacity = Math.random() * 0.5 + 0.5;
+
+            document.body.appendChild(raindrop);
+            
+            // Quick removal to save memory with high density
+            setTimeout(() => { raindrop.remove(); }, duration * 1000);
+        }
+
+        // MASSIVE DENSITY: Creating a drop every 33ms (about 30 drops per second)
+        const rainInterval = setInterval(createRaindrop, 33);
+
+        function createKiss(x, y) {
+            const kiss = document.createElement('div');
+            kiss.className = 'kiss-tap';
+            kiss.innerHTML = '💋';
+            kiss.style.left = (x - 20) + 'px';
+            kiss.style.top = (y - 20) + 'px';
+            document.body.appendChild(kiss);
+            setTimeout(() => kiss.remove(), 800);
+        }
+
+        document.addEventListener('touchstart', (e) => createKiss(e.touches[0].clientX, e.touches[0].clientY));
+        document.addEventListener('mousedown', (e) => createKiss(e.clientX, e.clientY));
+
+        // Auto redirect after 20 seconds
+        setTimeout(() => {
+            window.location.href = "last.html";
+        }, 20000);
+    </script>
+</body>
+</html>
